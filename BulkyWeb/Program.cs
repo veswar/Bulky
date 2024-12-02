@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,7 +39,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
