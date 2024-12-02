@@ -1,0 +1,75 @@
+﻿@model ProductModel
+
+<form method="post">
+    <div class="border mt-4 p-3">
+        <div class="row pb-2">
+            <h4>Product Delete</h4><hr />
+        </div>
+        @* <div asp-validation-summary="All" class="text-danger"></div> *@
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Title" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Title" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.ISBN" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.ISBN" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Author" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Author" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Description" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Description" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.ListPrice" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.ListPrice" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Price" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Price" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Price100" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Price100" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-2"> <label asp-for="Product.Price50" class="p-0"> </label></div>
+            <div class="col-4">
+                <input asp-for="Product.Price50" disabled class="form-control">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="form-control btn btn-primary">Delete</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a class="form-control btn btn-secondary border" asp-controller="Product" asp-action="index">go to list</a>
+            </div>
+
+        </div>
+    </div>
+</form>
