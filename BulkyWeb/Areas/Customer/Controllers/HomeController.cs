@@ -3,7 +3,9 @@ using System.Security.Claims;
 using BulkyBook.DataAccess.Repository;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Model.Models;
+using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyBookWeb.Controllers
@@ -22,6 +24,7 @@ namespace BulkyBookWeb.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> products = _unitOfWork.product.GetAll();
+            
             return View(products);
         }
         [Authorize]
@@ -48,12 +51,15 @@ namespace BulkyBookWeb.Controllers
             {
                 cartItem.Count = cartItem.Count + cart.Count;
                 _unitOfWork.shopingCart.Update(cartItem);
+                _unitOfWork.Save();
             }
             else
             {
                 _unitOfWork.shopingCart.Add(cart);
+                _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.shopingCart.GetAll(u => u.ApplicationUserId == userId).Count());
             }
-            _unitOfWork.Save();
+
             cart.Product = new Product();
             TempData["success"] = "Cart updated successfully";
             return RedirectToAction(nameof(Index));

@@ -27,6 +27,15 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(option =>
+{
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+    option.IdleTimeout = TimeSpan.FromMinutes(100);
+}
+
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +52,7 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
