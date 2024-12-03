@@ -2,6 +2,7 @@
 using BulkyBook.Model.Models;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace BulkyBookWeb.Areas.Customer.Controllers
@@ -145,8 +146,43 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 _unitOfWork.orderDetails.Add(orderDetail);
                 _unitOfWork.Save();
             }
+            //it is a regular customer account and we need to capture payment
+            //stripe logic
+            var domain = "https://localhost:44340/";
+            var options = new SessionCreateOptions
+            {
+                SuccessUrl = domain + $"customer/ShipingCart/OrderConfirmation?id={shopingCartModel.OrderHeader.Id}",
+                CancelUrl = domain + "customer/ShipingCart/index",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+            };
 
-            return RedirectToAction(nameof(OrderConfirmation), new { id = shopingCartModel.OrderHeader.Id });
+            foreach (var item in shopingCartModel.ShopingCartList)
+            {
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100), // $20.50 => 2050
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title
+                        }
+                    },
+                    Quantity = item.Count
+                };
+                options.LineItems.Add(sessionLineItem);
+            }
+
+
+            var service = new SessionService();
+            Session session = service.Create(options);
+            _unitOfWork.orderHeader.UpdateStripePaymentID(shopingCartModel.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+
         }
         public IActionResult OrderConfirmation(int id)
         {
